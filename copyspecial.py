@@ -16,19 +16,33 @@ import subprocess
 import argparse
 
 # This is to help coaches and graders identify student assignments
-__author__ = "???"
+__author__ = "Ethan375"
 
 
-# +++your code here+++
-# Write functions and modify main() to call them
+def get_special_paths(dir):
+    files_in_dir = os.listdir(dir)
+    dict_of_special_files = {}
+    for file in files_in_dir:
+        if '__' in file:
+            abs_path_of_special_file = os.path.abspath(file)
+            if dict_of_special_files.get(file):
+                raise Exception('there are duplicates of this file: {}'.format(file))
+            else:
+                dict_of_special_files[file] = abs_path_of_special_file
+            print(abs_path_of_special_file)
 
 def main():
     # This snippet will help you get started with the argparse module.
     parser = argparse.ArgumentParser()
     parser.add_argument('--todir', help='dest dir for special files')
     parser.add_argument('--tozip', help='dest zipfile for special files')
+    parser.add_argument('--dir', action="store_true", nargs='+')
     # TODO need an argument to pick up 'from_dir'
     args = parser.parse_args()
+    directory = args.dir
+
+    if directory:
+        get_special_paths(directory)
 
     # TODO you must write your own code to get the cmdline args.
     # Read the docs and examples for the argparse module about how to do this.
@@ -37,8 +51,8 @@ def main():
     # This is input data validation.  If something is wrong (or missing) with any
     # required args, the general rule is to print a usage message and exit(1).
 
-    # +++your code here+++
-    # Call your functions
+    
+
 
 
 if __name__ == "__main__":
