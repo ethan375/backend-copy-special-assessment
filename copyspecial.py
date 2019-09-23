@@ -16,19 +16,65 @@ import subprocess
 import argparse
 
 # This is to help coaches and graders identify student assignments
-__author__ = "???"
+__author__ = "Ethan375"
 
 
-# +++your code here+++
-# Write functions and modify main() to call them
+def get_special_paths(dir):
+    """Pass in the directory you want to search for special files"""
+    files_in_dir = os.listdir(dir)
+    dict_of_special_files = {}
+    for file in files_in_dir:
+        if '__' in file:
+            abs_path_of_special_file = os.path.abspath(file)
+            if dict_of_special_files.get(file):
+                raise Exception('there are duplicates of this file: {}'.format(file))
+            else:
+                dict_of_special_files[file] = abs_path_of_special_file
+            print(abs_path_of_special_file)
+
+def copyto(paths, dir):
+    """Supply a directory you want to copy special files to"""
+    for file in paths:
+        shutil.copyfile('./{}'.format(file), '{}/{}'.format(dir, file))
+
+def zip_to(paths, zippath):
+    """pass in the path you want to zip a file to"""
+    for file in paths:
+        # print 'Command I\'m going to do \n zip -j {}'.format(os.path.abspath(file))
+        var = subprocess.check_output(["zip", "-j",  zippath, 'file'])
+        print var
+        # subprocess.CalledProcessError: 'this is going to hopefully return someshit'
+            
+        
+
 
 def main():
     # This snippet will help you get started with the argparse module.
     parser = argparse.ArgumentParser()
     parser.add_argument('--todir', help='dest dir for special files')
     parser.add_argument('--tozip', help='dest zipfile for special files')
+    parser.add_argument('--dir',  nargs='+')
     # TODO need an argument to pick up 'from_dir'
     args = parser.parse_args()
+    directory = args.dir
+    todir = args.todir
+    zip_file = args.tozip
+
+    all_files = os.listdir('./')
+    special_files = []
+    for file in all_files:
+        if '__' in file:
+            special_files.append(file)
+
+
+    if directory:
+        get_special_paths(directory)
+
+    if todir:
+        copyto(special_files, todir)
+
+    if zip_file:
+        zip_to(special_files, zip_file)
 
     # TODO you must write your own code to get the cmdline args.
     # Read the docs and examples for the argparse module about how to do this.
@@ -37,8 +83,8 @@ def main():
     # This is input data validation.  If something is wrong (or missing) with any
     # required args, the general rule is to print a usage message and exit(1).
 
-    # +++your code here+++
-    # Call your functions
+    
+
 
 
 if __name__ == "__main__":
